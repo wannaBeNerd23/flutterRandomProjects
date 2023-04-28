@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/secondaryPages/add_consultation.dart';
+import 'package:flutter_projects/secondaryPages/consultation_list.dart';
 import 'package:flutter_projects/utils/constants.dart';
 
 void main() {
@@ -65,10 +66,10 @@ class _HomePageWidgetState extends State<HomePageWidget>
       'Index 0: Home',
       style: optionStyle,
     ),
-    Text(
+    /*Text(
       'Index 1: Business',
       style: optionStyle,
-    ),
+    )*/ConsultationListWidget(),
     Text(
       'Index 2: School',
       style: optionStyle,
