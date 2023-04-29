@@ -66,10 +66,10 @@ class _HomePageWidgetState extends State<HomePageWidget>
       'Index 0: Home',
       style: optionStyle,
     ),
-    /*Text(
+    Text(
       'Index 1: Business',
       style: optionStyle,
-    )*/ConsultationListWidget(),
+    ),
     Text(
       'Index 2: School',
       style: optionStyle,

@@ -10,9 +10,30 @@ class AddConsultationPageWidget extends StatefulWidget {
   State<StatefulWidget> createState() => _AddConsultationPageWidgetState();
 }
 
-class _AddConsultationPageWidgetState extends State<AddConsultationPageWidget> {
+class _AddConsultationPageWidgetState extends State<AddConsultationPageWidget>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    duration: const Duration(seconds: 1),
+    vsync: this,
+  );
   bool contentVisible = false;
   Timer? timer;
+  Animatable<Color?> background = TweenSequence<Color?>(
+    [
+      TweenSequenceItem(
+          weight: 0.5,
+          tween: ColorTween(
+            begin: const Color(0xff0055FF),
+            end: Colors.grey,
+          )),
+      TweenSequenceItem(
+          weight: 0.5,
+          tween: ColorTween(
+            begin: Colors.grey,
+            end: Colors.grey,
+          ))
+    ],
+  );
 
   @override
   void initState() {
@@ -21,6 +42,7 @@ class _AddConsultationPageWidgetState extends State<AddConsultationPageWidget> {
         const Duration(milliseconds: Constants.animationDuration), (Timer t) {
       setState(() {
         contentVisible = !contentVisible;
+        triggerBgChangeAnimation();
       });
       timer?.cancel();
     });
@@ -29,34 +51,90 @@ class _AddConsultationPageWidgetState extends State<AddConsultationPageWidget> {
   @override
   void dispose() {
     timer?.cancel();
+    _controller.dispose();
     super.dispose();
+  }
+
+  void triggerBgChangeAnimation() async {
+    await _controller.forward();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xff0055FF),
-      body: AnimatedOpacity(
-        opacity: contentVisible ? 1.0 : 0.0,
-        duration:
-            const Duration(milliseconds: Constants.animationDuration - 300),
-        child: Center(
-          child: ElevatedButton(
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.white)),
-            onPressed: () {
-              setState(() {
-                contentVisible = !contentVisible;
-              });
-              Navigator.pop(context, true);
-            },
-            child: const Text(
-              'Go back!',
-              style: TextStyle(color: Color(0xff0055FF)),
+    return AnimatedBuilder(
+        animation: _controller,
+        builder: (context, child) {
+          return Scaffold(
+            floatingActionButtonLocation: FloatingActionButtonLocation.startTop,
+            floatingActionButton: _buildCrossIconFAB(context),
+            backgroundColor: background.evaluate(AlwaysStoppedAnimation(_controller.value)),
+            body: AnimatedOpacity(
+              opacity: contentVisible ? 1.0 : 0.0,
+              duration: const Duration(
+                  milliseconds: Constants.animationDuration - 300),
+              child: const Text(
+                'Go back!',
+                style: TextStyle(color: Color(0xff0055FF)),
+              ),
+            ),
+          );
+        });
+  }
+
+  late final Animation<Offset> _offsetAnimation = Tween<Offset>(
+    begin: Offset.zero,
+    end: const Offset(0, -0.1),
+  ).animate(CurvedAnimation(
+    parent: _controller,
+    curve: Curves.fastOutSlowIn,
+  ));
+
+  bool crossIconVisible = false;
+
+  void onClosePage() {
+    setState(() {
+      //contentVisible = !contentVisible;
+    });
+    Navigator.pop(context, true);
+  }
+
+  final Tween<double> turnsTween = Tween<double>(
+    begin: 1,
+    end: 0.75,
+  );
+
+  Widget _buildCrossIconFAB(context, {key}) => SlideTransition(
+    position: _offsetAnimation,
+    child: AnimatedSlide(
+      duration: const Duration(milliseconds: 200),
+      offset: contentVisible ? Offset.zero : const Offset(0, 1),
+      child: AnimatedOpacity(
+        key: key,
+        duration: const Duration(seconds: 2),
+        opacity: crossIconVisible ? 0.0 : 1.0,
+        child: Padding(
+          padding: const EdgeInsets.only(
+            left: 20,
+            top: 60,
+            right: 30,
+            bottom: 0,
+          ),
+          child: RotationTransition(
+            turns: turnsTween.animate(_controller),
+            child: SizedBox(
+              width: 64,
+              height: 64,
+              child: FloatingActionButton(
+                elevation: 0,
+                  backgroundColor: Colors.transparent,
+                  onPressed: () {
+                    onClosePage();
+                  },
+                  child: const Icon(Icons.close, color: Colors.white,)),
             ),
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
 }
