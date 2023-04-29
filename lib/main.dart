@@ -46,7 +46,8 @@ class _HomePageWidgetState extends State<HomePageWidget>
   bool _isFabVisible = false;
 
   late final AnimationController _controller = AnimationController(
-    duration: const Duration(milliseconds: Constants.animationDuration + 100),
+    duration:
+        const Duration(milliseconds: Constants.standardAnimationDuration + 100),
     vsync: this,
   );
 
@@ -58,14 +59,6 @@ class _HomePageWidgetState extends State<HomePageWidget>
     curve: Curves.fastOutSlowIn,
   ));
 
-  Set<Center> home() => {
-        Center(
-          child: Image.asset('/assets/home.svg'),
-        )
-      };
-
-  static const TextStyle optionStyle =
-      TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     HospitalsListWidget(),
     ConsultationListWidget()
@@ -129,19 +122,14 @@ class _HomePageWidgetState extends State<HomePageWidget>
         position: _offsetAnimation,
         child: AnimatedOpacity(
           key: key,
-          duration:
-              const Duration(milliseconds: Constants.animationDuration - 100),
+          duration: const Duration(
+              milliseconds: Constants.standardAnimationDuration - 100),
           opacity: _isFabVisible ? 1.0 : 0.0,
           child: Padding(
-            padding: const EdgeInsets.only(
-              left: 20,
-              top: 60,
-              right: 30,
-              bottom: 0,
-            ),
+            padding: Constants.fabPadding,
             child: SizedBox(
-              width: 64,
-              height: 64,
+              width: Constants.fabButtonSize,
+              height: Constants.fabButtonSize,
               child: FloatingActionButton(
                   backgroundColor: const Color(0xff0055FF),
                   onPressed: () {
@@ -162,13 +150,13 @@ class _HomePageWidgetState extends State<HomePageWidget>
   }
 
   void _awaitReturnFromConsultationScreen(BuildContext context) async {
-    const fabSize = Size(Constants.plusButtonSize, Constants.plusButtonSize);
+    const fabSize = Size(Constants.fabButtonSize, Constants.fabButtonSize);
     const fabOffset = Offset.zero;
 
     final result = await Navigator.of(context).push(
       PageRouteBuilder(
         transitionDuration:
-            const Duration(milliseconds: Constants.animationDuration),
+            const Duration(milliseconds: Constants.standardAnimationDuration),
         pageBuilder: (context, animation, secondaryAnimation) =>
             const AddConsultationPageWidget(),
         transitionsBuilder: (context, animation, secondaryAnimation, child) =>

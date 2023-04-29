@@ -39,7 +39,8 @@ class _AddConsultationPageWidgetState extends State<AddConsultationPageWidget>
   void initState() {
     super.initState();
     timer = Timer.periodic(
-        const Duration(milliseconds: Constants.animationDuration), (Timer t) {
+        const Duration(milliseconds: Constants.standardAnimationDuration),
+        (Timer t) {
       setState(() {
         contentVisible = !contentVisible;
         triggerBgChangeAnimation();
@@ -77,7 +78,7 @@ class _AddConsultationPageWidgetState extends State<AddConsultationPageWidget>
               child: AnimatedOpacity(
                 opacity: contentVisible ? 1.0 : 0.0,
                 duration: const Duration(
-                    milliseconds: Constants.animationDuration - 300),
+                    milliseconds: Constants.fabCrossIconAnimationDuration),
                 child: const SizedBox(
                   child: null,
                 ),
@@ -112,24 +113,22 @@ class _AddConsultationPageWidgetState extends State<AddConsultationPageWidget>
   Widget _buildCrossIconFAB(context, {key}) => SlideTransition(
         position: _offsetAnimation,
         child: AnimatedSlide(
-          duration: const Duration(milliseconds: 200),
+          duration: const Duration(
+              milliseconds: Constants.fabCrossIconAnimationDuration),
           offset: contentVisible ? Offset.zero : const Offset(0, 1),
           child: AnimatedOpacity(
             key: key,
-            duration: const Duration(seconds: 2),
+            duration: const Duration(
+                milliseconds:
+                    Constants.consultationListPageScreenTransitionDuration),
             opacity: crossIconVisible ? 0.0 : 1.0,
             child: Padding(
-              padding: const EdgeInsets.only(
-                left: 20,
-                top: 60,
-                right: 30,
-                bottom: 0,
-              ),
+              padding: Constants.fabPadding,
               child: RotationTransition(
                 turns: turnsTween.animate(_controller),
                 child: SizedBox(
-                  width: 64,
-                  height: 64,
+                  width: Constants.fabButtonSize,
+                  height: Constants.fabButtonSize,
                   child: FloatingActionButton(
                       elevation: 0,
                       backgroundColor: Colors.transparent,
