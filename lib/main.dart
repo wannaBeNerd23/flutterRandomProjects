@@ -68,17 +68,19 @@ class _HomePageWidgetState extends State<HomePageWidget>
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
     HospitalsListWidget(),
-    ConsultationListWidget(),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
+    ConsultationListWidget()
   ];
 
   void _onBottomNavItemTapped(int index) {
     setState(() {
+      bool canToggle = false;
+      if (_selectedIndex != index) {
+        canToggle = true;
+      }
       _selectedIndex = index;
-      toggleFabVisibility();
+      if (canToggle) {
+        toggleFabVisibility();
+      }
     });
   }
 
@@ -114,10 +116,6 @@ class _HomePageWidgetState extends State<HomePageWidget>
           BottomNavigationBarItem(
             icon: Icon(Icons.business),
             label: 'Business',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.school),
-            label: 'School',
           ),
         ],
         currentIndex: _selectedIndex,
