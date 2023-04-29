@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_projects/secondaryPages/add_consultation.dart';
 import 'package:flutter_projects/secondaryPages/consultation_list.dart';
+import 'package:flutter_projects/secondaryPages/hospitals_list.dart';
 import 'package:flutter_projects/utils/constants.dart';
 
 void main() {
@@ -42,9 +43,7 @@ class HomePageWidget extends StatefulWidget {
 class _HomePageWidgetState extends State<HomePageWidget>
     with SingleTickerProviderStateMixin, RouteAware {
   int _selectedIndex = 0;
-  bool visible = true;
-  final GlobalKey _fabKey = GlobalKey();
-  final bool _fabVisible = true;
+  bool _isFabVisible = false;
 
   late final AnimationController _controller = AnimationController(
     duration: const Duration(milliseconds: Constants.animationDuration + 100),
@@ -59,17 +58,17 @@ class _HomePageWidgetState extends State<HomePageWidget>
     curve: Curves.fastOutSlowIn,
   ));
 
+  Set<Center> home() => {
+        Center(
+          child: Image.asset('/assets/home.svg'),
+        )
+      };
+
   static const TextStyle optionStyle =
       TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
   static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
+    HospitalsListWidget(),
+    ConsultationListWidget(),
     Text(
       'Index 2: School',
       style: optionStyle,
@@ -84,12 +83,12 @@ class _HomePageWidgetState extends State<HomePageWidget>
   }
 
   void toggleFabVisibility() {
-    if (visible) {
+    if (_isFabVisible) {
       _controller.forward();
     } else {
       _controller.reverse();
     }
-    visible = !visible;
+    _isFabVisible = !_isFabVisible;
   }
 
   @override
@@ -134,7 +133,7 @@ class _HomePageWidgetState extends State<HomePageWidget>
           key: key,
           duration:
               const Duration(milliseconds: Constants.animationDuration - 100),
-          opacity: visible ? 1.0 : 0.0,
+          opacity: _isFabVisible ? 1.0 : 0.0,
           child: Padding(
             padding: const EdgeInsets.only(
               left: 20,
